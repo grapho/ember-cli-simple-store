@@ -118,7 +118,8 @@ let Store = ServiceType.extend({
     },
     pushArray(type, dataArray) {
         let primaryKey = primaryKeyForType(type, this);
-        let records = [];
+        let returnRecords = [];
+        let arrayForTypeEntires = [];
 
         dataArray.forEach((data) => {
             data[primaryKey] = this._coerceId(data[primaryKey]);
@@ -128,15 +129,17 @@ let Store = ServiceType.extend({
                 setProperties(record, data);
             } else {
                 record = createRecord(type, data, this);
-                records.push(record);
+                arrayForTypeEntires.push(record);
             }
+
+            returnRecords.push(record);
         });
 
-        arrayForType(type, this).pushObjects(records);
+        arrayForType(type, this).pushObjects(arrayForTypeEntires);
 
         this.scheduleUpdate(type);
 
-        return records;
+        return returnRecords;
     },
     scheduleUpdate(type) {
         let recompute = this.get("recompute");
